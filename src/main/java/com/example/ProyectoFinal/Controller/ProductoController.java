@@ -39,7 +39,9 @@ public class ProductoController {
         if(productoRepository.findByproducNombreLike(likePattern) == null){
             return ResponseEntity.notFound().build();
         }
-        List<Producto> respuesta = productoRepository.findByproducNombreLike(likePattern).stream().filter(x->x.getProducStock()>10).toList();
+        List<Producto> respuesta = productoRepository.findByproducNombreLike(likePattern).stream()
+                .filter((x)->x.getProducStock() > 10).toList();
+
         return ResponseEntity.ok(respuesta.stream().toList());
     }
 
@@ -56,12 +58,17 @@ public class ProductoController {
         return ResponseEntity.ok(result);
     }
 
+
+
     @CrossOrigin(origins = "*")
     @PutMapping("/api/producto")
     public ResponseEntity<Producto> update(@RequestBody Producto producto){
         if(!productoRepository.existsById(producto.getId_producto())){
             return ResponseEntity.notFound().build();
         }
+        /*Integer result = productoRepository.updateNative(producto.getId_producto(),producto.getFk_categoria().getId()
+        ,producto.getProducMarca(),producto.getProducNombre(),producto.getProducSku(),producto.getProducPrecio()
+        ,producto.getProducStock());*/
         Producto result = productoRepository.save(producto);
         return ResponseEntity.ok(result);
     }

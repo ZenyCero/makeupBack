@@ -22,6 +22,7 @@ public class Producto {
     @Column(nullable = false)
     private Integer producStock;
 
+
     public Producto() {
     }
 
@@ -90,4 +91,5 @@ public class Producto {
     public void setProducStock(Integer producStock) {
         this.producStock = producStock;
     }
+
 }

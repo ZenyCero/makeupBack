@@ -14,4 +14,8 @@ public interface OrdenRepository extends JpaRepository<Orden,Long> {
     @Modifying
     @Query("delete from #{#entityName} b where b.id_orden=:id")
     void deleteByNativeId(@Param("id") Long id);
+    @Transactional
+    @Modifying
+    @Query("update from #{#entityName} b set b.orden_estado = 'P' where b.id_orden=:id")
+    void updateStateByNativeId(@Param("id") Long id);
 }

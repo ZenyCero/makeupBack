@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -55,6 +56,16 @@ public class OrdenController{
         }
         Orden result = ordenRepository.save(orden);
         return ResponseEntity.ok(result);
+    }
+
+    @CrossOrigin(origins = "*")
+    @PutMapping("/api/ordenN/{id}")
+    public ResponseEntity updateState(@PathVariable Long id){
+        if(!ordenRepository.existsById(id)){
+            return ResponseEntity.notFound().build();
+        }
+        ordenRepository.updateStateByNativeId(id);
+        return ResponseEntity.ok().build();
     }
 
     @CrossOrigin(origins = "*")

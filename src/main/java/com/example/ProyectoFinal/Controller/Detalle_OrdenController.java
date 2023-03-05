@@ -7,6 +7,7 @@ import com.example.ProyectoFinal.Repository.Detalle_OrdenRepository;
 import com.example.ProyectoFinal.Repository.OrdenRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import javax.persistence.EntityManager;
@@ -26,6 +27,12 @@ public class Detalle_OrdenController {
         return detalle_ordenRepository.findAll();
     }
 
+    @CrossOrigin(origins = "*")
+    @GetMapping("/api/detalle_ordenNative/{id}")
+    public Detalle_Orden findAllNative(@PathVariable Long id){
+        return detalle_ordenRepository.findDetalleById(id);
+    }
+
     /*@CrossOrigin(origins = "*")
     @GetMapping("/api/detalle_ordenes/totalSale")
     public Optional<Double> totalSale(){
@@ -37,7 +44,10 @@ public class Detalle_OrdenController {
     public ResponseEntity<Detalle_Orden> createN(@RequestBody Detalle_Orden detalle_orden){
         detalle_ordenRepository.insertDetalle(detalle_orden.getId_detalle_orden(),detalle_orden.getDetalle_cantidad(),
                 detalle_orden.getDetalle_precio(),detalle_orden.getFk_orden().getId_orden(),detalle_orden.getFk_orden().getFk_producto().get(0).getId_producto());
-
+        //detalle_ordenRepository.save(detalle_orden);
+        /*detalle_ordenRepository.insert_procedure_detalle_orden(
+        detalle_orden.getFk_orden().getId_orden(),detalle_orden.getFk_orden().getFk_producto().get(0).getId_producto(),
+                detalle_orden.getDetalle_precio(),detalle_orden.getDetalle_cantidad());*/
         Detalle_Orden last = detalle_ordenRepository.findAll().stream().reduce((first,second)->second).orElse(null);
         return ResponseEntity.ok(last);
     }
@@ -66,9 +76,11 @@ public class Detalle_OrdenController {
     }
 
     @CrossOrigin(origins = "*")
+    @Transactional(readOnly = false)
     @GetMapping("/api/detalle_ordenL/{id}")
     public ResponseEntity<List<Detalle_Orden>> findOneByIdList(@PathVariable Long id){
-        List<Detalle_Orden> result = detalle_ordenRepository.findAll().stream().filter((x)->x.getFk_orden().getId_orden()==id).toList();
+        //List<Detalle_Orden> result = detalle_ordenRepository.findAll().stream().filter((x)->x.getFk_orden().getId_orden()==id).toList();
+        List<Detalle_Orden> result = detalle_ordenRepository.read_byIdOrden_detalle_orden(id);
         return ResponseEntity.ok(result);
     }
 
@@ -76,6 +88,14 @@ public class Detalle_OrdenController {
     @DeleteMapping("/api/detalle_ordenN/{id}")
     public ResponseEntity<Orden> deleteN(@PathVariable Long id){
         detalle_ordenRepository.deleteByNativeId(id);
+        return ResponseEntity.ok().build();
+    }
+
+    @CrossOrigin(origins = "*")
+    @DeleteMapping("/api/detalle_ordenD/{id}")
+    public ResponseEntity<Orden> deleteDetalleN(@PathVariable Long id){
+        //detalle_ordenRepository.deleteDetalleByNativeId(id);
+        detalle_ordenRepository.delete_all_procedure_detalle_orden(id);
         return ResponseEntity.ok().build();
     }
 
